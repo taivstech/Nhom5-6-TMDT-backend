@@ -71,6 +71,57 @@ CREATE TABLE IF NOT EXISTS user_identities (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Table: categories
+CREATE TABLE IF NOT EXISTS categories (
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(120) NOT NULL UNIQUE,
+    description TEXT,
+    parent_id VARCHAR(36),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by VARCHAR(50),
+    updated_by VARCHAR(50),
+    deleted_at TIMESTAMP NULL,
+    version BIGINT DEFAULT 0,
+    FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table: products
+CREATE TABLE IF NOT EXISTS products (
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    price DECIMAL(15, 2) NOT NULL,
+    discount_price DECIMAL(15, 2),
+    stock_quantity INT NOT NULL DEFAULT 0,
+    category_id VARCHAR(36),
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    brand VARCHAR(100),
+    weight DOUBLE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by VARCHAR(50),
+    updated_by VARCHAR(50),
+    deleted_at TIMESTAMP NULL,
+    version BIGINT DEFAULT 0,
+    INDEX (slug),
+    INDEX (status),
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table: product_images
+CREATE TABLE IF NOT EXISTS product_images (
+    id VARCHAR(36) PRIMARY KEY,
+    product_id VARCHAR(36) NOT NULL,
+    url TEXT NOT NULL,
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Seed Data (Initial ADMIN and roles)
 INSERT IGNORE INTO roles (id, name, description) VALUES ('ADMIN', 'ADMIN', 'Super administrator with full access');
 INSERT IGNORE INTO roles (id, name, description) VALUES ('USER', 'USER', 'Standard customer account');
