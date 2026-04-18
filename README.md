@@ -41,7 +41,7 @@ This project uses a microservices-inspired modular architecture, separating conc
 ## Getting Started
 
 ### Prerequisites
-- JDK 21
+- JDK21
 - Maven
 - MySQL Server
 - Redis Server
