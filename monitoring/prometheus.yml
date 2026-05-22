@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s       # how often Prometheus pulls metrics
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: 'ecommerceweb-backend'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      # host.docker.internal resolves to the host machine from inside Docker
+      - targets: ['host.docker.internal:8088']
+    # Optional: add labels visible in Grafana
+    relabel_configs:
+      - target_label: service
+        replacement: ecommerceweb
+
